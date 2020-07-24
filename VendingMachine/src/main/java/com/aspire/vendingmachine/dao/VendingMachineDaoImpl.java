@@ -45,7 +45,11 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
 
     @Override
     public Product sellproduct(String productName) throws VendingMachinePersistenceException {
+
+        writeProducts();
+
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     private void loadProducts() throws VendingMachinePersistenceException {
@@ -177,7 +181,7 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
         //productname
         String productAsText = Util.replaceSpecialCharacters(aProduct.getProductName()) + DELIMITER;
 
-        // add the rest of the properties in the correct order:\
+        // add the rest of the properties in the correct order:
         // price
         productAsText += aProduct.getPrice() + DELIMITER;
 

@@ -9,6 +9,14 @@ package com.aspire.vendingmachine.service;
  *
  * @author louie
  */
-public class VendingMachineInvalidOptionException {
+public class VendingMachineInvalidOptionException extends Exception {
+
+    public VendingMachineInvalidOptionException(String message) {
+        super(message);
+    }
+
+    public VendingMachineInvalidOptionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

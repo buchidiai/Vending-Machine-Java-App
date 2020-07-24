@@ -9,6 +9,14 @@ package com.aspire.vendingmachine.service;
  *
  * @author louie
  */
-public class VendingMachineInsufficentFundsException {
+public class VendingMachineInsufficentFundsException extends Exception {
+
+    public VendingMachineInsufficentFundsException(String message) {
+        super(message);
+    }
+
+    public VendingMachineInsufficentFundsException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }
