@@ -31,9 +31,10 @@ public class VendingMachineAuditDaoImpl implements VendingMachineAuditDao {
             throw new VendingMachinePersistenceException("Could not persist audit information.", e);
         }
 
-        LocalDateTime timestamp = LocalDateTime.now();
+        LocalDateTime ld = LocalDateTime.now();
 
-        out.println(timestamp.toString() + "::" + product.getProductName() + "::" + product.getPrice() + "::" + product.getQuantity() + "::" + change);
+        String time = ld.getDayOfWeek() + "-" + ld.getMonth() + " " + ld.getDayOfMonth() + "," + ld.getYear();
+        out.println(time + "::" + product.getProductName() + "::" + product.getPrice() + "::" + product.getQuantity() + "::" + change);
         out.flush();
     }
 

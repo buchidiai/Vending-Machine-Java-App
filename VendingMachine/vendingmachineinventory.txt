@@ -1,6 +1,11 @@
-chips::2.50::9
-butter-finger::1.50::5
-mint-gum::2::10
-starbursts::3.50::11
-chocolate::0.75::1
-Now&later::0.35::0
+Burger::4.67::5
+HotDog::3.50::4
+Cigarettes::7.99::7
+Chips::3.50::2
+IceCream::4.25::0
+Pizza::5.50::1
+Cupcake::4.75::7
+Apples(3pk)::3.50::4
+Socks::3.75::0
+Makeup::3.50::4
+Condoms::14.99::3

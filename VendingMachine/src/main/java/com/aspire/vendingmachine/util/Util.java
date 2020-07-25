@@ -13,7 +13,7 @@ public class Util {
 
     public static String replaceSpecialCharacters(String str) {
 
-        return str.replace("[^a-zA-Z0-9\\s+]", "");
+        return str.replaceAll("[^a-zA-Z0-9\\s+]", "").trim();
 
     }
 

@@ -76,8 +76,6 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
 
             product.decrementQuantity();
         }
-
-//        writeProducts();
     }
 
     private void loadProducts() throws VendingMachinePersistenceException {
@@ -138,6 +136,7 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
 
         if (productTokens.length == NUMBER_OF_FIELDS) {
 
+            //on load up size is zero so read from file
             if (products.size() == 0) {
 
                 //product name
@@ -154,15 +153,18 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
                 productFromFile = new Product(productName, productPrice, quantity);
 
             } else {
+                //size is not zero
 
-                //check for duplicates
+                //check for duplicates for list
                 for (Product p : products) {
 
-                    if (p.getProductName().equals(productTokens[0])) {
+                    //if name in list (cleaned up with regex)  == name in file (cleaned up with regex)
+                    if (p.getProductName().equals(Util.replaceSpecialCharacters(productTokens[0]))) {
 
                         return null;
 
                     } else {
+
                         //product name
                         String productName = Util.replaceSpecialCharacters(productTokens[0]);
 

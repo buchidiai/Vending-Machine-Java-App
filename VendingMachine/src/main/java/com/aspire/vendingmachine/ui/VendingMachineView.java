@@ -27,14 +27,20 @@ public class VendingMachineView {
     }
 
     public void displayVendingMachineWelcome() {
-
-        System.out.println(" ******** Welcome To The Best Vending Machine In The World ******** ");
-        displaySpace();
+        io.print("*******************************************************************\n"
+                + "*******************************************************************");
+        System.out.println("******** Welcome To The Best Vending Machine In The World *********");
+        System.out.println("***************** We have Everything!! Literally ******************");
+        io.print("*******************************************************************\n"
+                + "*******************************************************************");
 
     }
 
     public void displayVendingMachineProducts(List<Product> products) {
-        io.print("Choice " + " Name " + " " + " Price " + " Quantity ");
+
+        io.print("____________________________________________");
+        System.out.printf("|%5s|%13s|%10s|%8s \n", "Choice", "Name", "Price", "Qty");
+        io.print("--------------------------------------------");
         Product p;
 
         for (int i = 0; i < products.size(); i++) {
@@ -42,6 +48,13 @@ public class VendingMachineView {
             displayProducts(i, p.getProductName(), p.getPrice(), p.getQuantity());
         }
 
+    }
+
+    private void displayProducts(int index, String productName, BigDecimal price, int quantity) {
+        String currency = price.compareTo(new BigDecimal("1.00")) > 0 ? "$" + price : "₵" + price;
+        String soldOut = quantity == 0 ? "sold out" : String.valueOf(quantity);
+
+        System.out.printf("|%-6d|%13s|%10s|%10s \n", index + 1, productName, currency, soldOut);
     }
 
     public void displayDispensingItemAndChange(String[] productName) {
@@ -59,6 +72,8 @@ public class VendingMachineView {
 
         displaySpace();
         displaySpace();
+
+        io.readString("Press Enter to continue");
     }
 
     public void displayChange(String changeAmount) {
@@ -90,14 +105,6 @@ public class VendingMachineView {
     public int getProductSelection(List<Product> products) {
         displaySpace();
         return io.readInt("Please choose from one of our products:", 1, products.size());
-
-    }
-
-    private void displayProducts(int index, String productName, BigDecimal price, int quantity) {
-        String currency = price.compareTo(new BigDecimal("1.00")) > 0 ? "$" : "₵";
-        String soldOut = quantity == 0 ? "sold out" : String.valueOf(quantity);
-
-        io.print(" " + (index + 1) + " " + productName + " " + currency + price + "  " + soldOut);
 
     }
 
