@@ -6,6 +6,7 @@
 package com.aspire.vendingmachine.dto;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  *
@@ -39,8 +40,50 @@ public class Product {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void decrementQuantity() {
+
+        if (this.quantity != 0) {
+            this.quantity -= 1;
+        }
+
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.productName);
+        hash = 53 * hash + Objects.hashCode(this.price);
+        hash = 53 * hash + this.quantity;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Product other = (Product) obj;
+        if (this.quantity != other.quantity) {
+            return false;
+        }
+        if (!Objects.equals(this.productName, other.productName)) {
+            return false;
+        }
+        if (!Objects.equals(this.price, other.price)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" + "productName=" + productName + ", price=" + price + ", quantity=" + quantity + '}';
     }
 
 }

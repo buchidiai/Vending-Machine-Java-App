@@ -1,4 +1,6 @@
-chips::2.50::10
+chips::2.50::9
 butter-finger::1.50::5
-mint-gum::50::10
-starbursts::3:50::11
+mint-gum::2::10
+starbursts::3.50::11
+chocolate::0.75::1
+Now&later::0.35::0

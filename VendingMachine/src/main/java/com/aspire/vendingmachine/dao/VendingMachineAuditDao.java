@@ -6,6 +6,7 @@
 package com.aspire.vendingmachine.dao;
 
 import com.aspire.vendingmachine.dto.Product;
+import java.math.BigDecimal;
 
 /**
  *
@@ -13,6 +14,6 @@ import com.aspire.vendingmachine.dto.Product;
  */
 public interface VendingMachineAuditDao {
 
-    public void writeAuditEntry(String entry, Product product) throws VendingMachinePersistenceException;
+    public void writeAuditEntry(BigDecimal change, Product product) throws VendingMachinePersistenceException;
 
 }

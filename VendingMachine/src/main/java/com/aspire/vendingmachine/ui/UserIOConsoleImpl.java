@@ -56,21 +56,34 @@ public class UserIOConsoleImpl implements UserIO {
 
     @Override
     public int readInt(String prompt, int min, int max) {
-        int result = 0;
+        int response = 0;
+        boolean valid = true;
 
-        try {
+        while (valid) {
 
-            do {
-                result = readInt(prompt + " (" + min + "-" + max + ")");
-            } while (result < min || result > max);
+            try {
 
-        } catch (Exception e) {
+                this.print(prompt + " (" + min + "-" + max + ")");
 
-            this.print("Value must be a numberdsd");
+                String stringValue = in.nextLine();
+
+                response = Integer.parseInt(stringValue);
+
+                if (response <= 0 || response >= (max + 1)) {
+                    continue;
+                }
+
+                valid = false;
+
+            } catch (Exception e) {
+
+                this.print("Value entered must be from " + min + " to " + max);
+                continue;
+            }
 
         }
 
-        return result;
+        return response;
 
     }
 
@@ -78,14 +91,36 @@ public class UserIOConsoleImpl implements UserIO {
     public BigDecimal readBigDecimal(String prompt) {
 
         BigDecimal result = new BigDecimal("0");
+        String value = "";
 
-        try {
-            this.print(prompt);
-            result = in.nextBigDecimal();
+        boolean valid = true;
 
-        } catch (Exception e) {
+        while (valid) {
+            try {
 
-            this.print("Must be a valid amount");
+                this.print(prompt);
+
+                this.print("Press q to quit");
+                value = in.nextLine();
+
+                if (value.charAt(0) == 'q' || value.charAt(0) == 'Q') {
+                    return null;
+                } else {
+                    if (value.length() == 1) {
+                        this.print("Must be a valid currency amount");
+                        continue;
+                    } else {
+                        result = new BigDecimal(value);
+                        valid = false;
+                    }
+
+                }
+
+            } catch (Exception e) {
+
+                this.print("Must be a valid currency amount");
+                continue;
+            }
 
         }
 

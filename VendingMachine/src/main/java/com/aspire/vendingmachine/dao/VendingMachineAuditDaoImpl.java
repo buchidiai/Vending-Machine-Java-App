@@ -9,6 +9,7 @@ import com.aspire.vendingmachine.dto.Product;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -20,7 +21,7 @@ public class VendingMachineAuditDaoImpl implements VendingMachineAuditDao {
     public static final String AUDIT_FILE = "auditactivity.txt";
 
     @Override
-    public void writeAuditEntry(String entry, Product product) throws VendingMachinePersistenceException {
+    public void writeAuditEntry(BigDecimal change, Product product) throws VendingMachinePersistenceException {
         PrintWriter out;
 
         try {
@@ -31,8 +32,8 @@ public class VendingMachineAuditDaoImpl implements VendingMachineAuditDao {
         }
 
         LocalDateTime timestamp = LocalDateTime.now();
-        //date /time  /items  / price quatity    /left
-        out.println(timestamp.toString() + " : " + entry);
+
+        out.println(timestamp.toString() + "::" + product.getProductName() + "::" + product.getPrice() + "::" + product.getQuantity() + "::" + change);
         out.flush();
     }
 

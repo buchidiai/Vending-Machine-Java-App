@@ -6,6 +6,7 @@
 package com.aspire.vendingmachine.dao;
 
 import com.aspire.vendingmachine.dto.Product;
+import com.aspire.vendingmachine.service.VendingMachineNoItemInventoryException;
 import com.aspire.vendingmachine.util.Util;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -38,18 +39,45 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
     }
 
     @Override
-    public List<Product> getAllProducts() throws VendingMachinePersistenceException {
+    public void addProduct(Product product) throws VendingMachinePersistenceException {
         loadProducts();
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        products.add(product);
+        writeProducts();
+
     }
 
     @Override
-    public Product sellproduct(String productName) throws VendingMachinePersistenceException {
+    public List<Product> getAllProducts() throws VendingMachinePersistenceException {
+        loadProducts();
 
-        writeProducts();
+        return products;
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
+    @Override
+    public Product getProduct(String productName) throws VendingMachinePersistenceException {
+
+        Product found = null;
+        for (Product p : products) {
+            if (p.getProductName().equals(productName)) {
+                found = p;
+            }
+        }
+        return found;
+    }
+
+    @Override
+    public void decrementQuantity(Product product) throws VendingMachineNoItemInventoryException {
+
+        if (product.getQuantity() == 0) {
+
+            throw new VendingMachineNoItemInventoryException("Sorry were out of " + product.getProductName());
+        } else {
+
+            product.decrementQuantity();
+        }
+
+//        writeProducts();
     }
 
     private void loadProducts() throws VendingMachinePersistenceException {
@@ -80,6 +108,7 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
 
             // Put currentProduct into the map using product id as the key
             if (currentProduct != null) {
+
                 products.add(currentProduct);
             }
 
@@ -89,6 +118,7 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
     }
 
     private Product unmarshallProduct(String productAsText) {
+
         // productAsText is expecting a line read in from our file.
         // For example, it might look like this:
         // chips::2.50::10
@@ -102,25 +132,55 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
         // |     |    |   |
         // ---------------
         //  [0]  [1]    [2]
-
         String[] productTokens = productAsText.split(DELIMITER);
 
-        Product productFromFile;
+        Product productFromFile = null;
 
-        if (productAsText.length() == NUMBER_OF_FIELDS) {
+        if (productTokens.length == NUMBER_OF_FIELDS) {
 
-            //product name
-            String productName = Util.replaceSpecialCharacters(productTokens[0]);
+            if (products.size() == 0) {
 
-            //produce price
-            BigDecimal productPrice = new BigDecimal(productTokens[1]);
+                //product name
+                String productName = Util.replaceSpecialCharacters(productTokens[0]);
 
-            //product quatity
-            int quantity = Integer.parseInt(productTokens[2]);
+                //produce price
+                BigDecimal productPrice = new BigDecimal(productTokens[1]);
 
-            // Which we can then use to create a new Product object to satisfy
-            // the requirements of the Product constructor.
-            productFromFile = new Product(productName, productPrice, quantity);
+                //product quantity
+                int quantity = Integer.parseInt(productTokens[2]);
+
+                // Which we can then use to create a new Product object to satisfy
+                // the requirements of the Product constructor.
+                productFromFile = new Product(productName, productPrice, quantity);
+
+            } else {
+
+                //check for duplicates
+                for (Product p : products) {
+
+                    if (p.getProductName().equals(productTokens[0])) {
+
+                        return null;
+
+                    } else {
+                        //product name
+                        String productName = Util.replaceSpecialCharacters(productTokens[0]);
+
+                        //produce price
+                        BigDecimal productPrice = new BigDecimal(productTokens[1]);
+
+                        //product quantity
+                        int quantity = Integer.parseInt(productTokens[2]);
+
+                        // Which we can then use to create a new Product object to satisfy
+                        // the requirements of the Product constructor.
+                        productFromFile = new Product(productName, productPrice, quantity);
+
+                    }
+
+                }
+
+            }
 
         } else {
             return null;
@@ -186,10 +246,15 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
         productAsText += aProduct.getPrice() + DELIMITER;
 
         // quantity
-        productAsText += aProduct.getQuantity() + DELIMITER;
+        productAsText += aProduct.getQuantity();
 
         // We have now turned a product to text! Return it!
         return productAsText;
+    }
+
+    @Override
+    public void updateinventory() throws VendingMachinePersistenceException {
+        writeProducts();
     }
 
 }
