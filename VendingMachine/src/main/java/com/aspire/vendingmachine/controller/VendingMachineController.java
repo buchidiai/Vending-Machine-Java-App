@@ -6,6 +6,7 @@
 package com.aspire.vendingmachine.controller;
 
 import com.aspire.vendingmachine.dao.VendingMachinePersistenceException;
+import com.aspire.vendingmachine.dto.Response;
 import com.aspire.vendingmachine.service.VendingMachineInsufficentFundsException;
 import com.aspire.vendingmachine.service.VendingMachineNoItemInventoryException;
 import com.aspire.vendingmachine.service.VendingMachineServiceLayer;
@@ -28,17 +29,22 @@ public class VendingMachineController {
 
     public void run() {
         boolean keepGoing = true;
+        BigDecimal moneyEntered = new BigDecimal("0.00");
 
         while (keepGoing) {
+
             //welcome message
             welcomeMessage();
             try {
-                //list all rpoducts in inventory
-                listAllProducts();
 
+                //only ask for money and lisy products if there no money in machine
                 //ask for user to enter money
                 //returns big decimal
-                BigDecimal moneyEntered = getMoneyInserted();
+                if (moneyEntered.compareTo(new BigDecimal("0.00")) <= 0) {
+                    //list all rpoducts in inventory
+                    listAllProducts(moneyEntered);
+                    moneyEntered = getMoneyInserted();
+                }
 
                 //check if money is null / ask user  if they want to quit & exit program
                 //returns null if they want to quit program
@@ -51,12 +57,13 @@ public class VendingMachineController {
                     break;
                 } else {
                     //list products again after entering money
-                    listAllProducts();
+                    listAllProducts(moneyEntered);
                     //get user's choice of product & verify and sell product
-                    getProductChoice(moneyEntered);
+                    moneyEntered = getProductChoice(moneyEntered);
                 }
 
             } catch (VendingMachineInsufficentFundsException | VendingMachineNoItemInventoryException | VendingMachinePersistenceException e) {
+
                 displayError(e.getMessage());
 
             }
@@ -66,11 +73,17 @@ public class VendingMachineController {
 
     }
 
-    private void getProductChoice(BigDecimal moneyEntered) throws VendingMachinePersistenceException, VendingMachineInsufficentFundsException, VendingMachineNoItemInventoryException {
+    private BigDecimal getProductChoice(BigDecimal moneyEntered) throws VendingMachinePersistenceException, VendingMachineInsufficentFundsException, VendingMachineNoItemInventoryException {
 
         //get user choice from all products
         //return index of product
         int userSelection = view.getProductSelection(service.getAllProducts());
+
+        boolean hasError = false;
+        //error types
+        String errortype = "";
+        // price of product
+        String productPrice = "";
 
         view.displaySpace();
 
@@ -78,16 +91,68 @@ public class VendingMachineController {
             //sell product to user
             //@param Big decimal money entered & int userSelection from index of products
             //returns change and product name sold
-            String[] response = service.sellProduct(moneyEntered, userSelection);
+            Response response = service.sellProduct(moneyEntered, userSelection);
 
             //display change and product sold
             view.displayDispensingItemAndChange(response);
 
         } catch (VendingMachinePersistenceException | VendingMachineInsufficentFundsException | VendingMachineNoItemInventoryException e) {
+            //set boolean because an error ocured
+            hasError = true;
+            //get error name
+            errortype = e.getClass().getSimpleName();
+            //get price from error message
+            //price was added in throw error exception
+            //removed price from message shown to client
+            productPrice = e.getMessage().split(",")[e.getMessage().split(",").length - 1];
+            //display cleaned up error
+            displayError(e.getMessage().split(",")[0]);
 
-            displayError(e.getMessage());
+        } finally {
+
+            //if error occured
+            //check the type and do stuff
+            if (hasError) {
+                //if error type is insuffiecent funds
+                //ask for more money
+
+                if (errortype.equals(VendingMachineInsufficentFundsException.class.getSimpleName())) {
+
+                    try {
+                        //get extra more so user can get product
+                        BigDecimal extraMoney = addMoreMoney(moneyEntered, productPrice);
+
+                        //add existing money to extra money added
+                        moneyEntered = moneyEntered.add(extraMoney);
+
+                    } catch (Exception e) {
+                        //will throw exception if the user  doesnt want to add more money (user enters no) or quits
+                        //already display refunding money to user
+                        //set money in machine back to 0.00
+
+                        //if error is null pointer set money in machine so user can still buy product
+                        if (e.getClass().getSimpleName().equals("NullPointerException")) {
+                            System.out.println(" there was a NullPointerException money will be kept the same");
+                            moneyEntered = moneyEntered;
+                        } else {
+                            //get chose to exit program
+                            moneyEntered = BigDecimal.ZERO;
+                        }
+
+                    }
+                    //set entered money plus extra to moneyEntered
+                    return moneyEntered;
+
+                }
+
+            } else {
+                //no error all money used up
+                moneyEntered = BigDecimal.ZERO;
+            }
 
         }
+
+        return moneyEntered;
 
     }
 
@@ -98,9 +163,20 @@ public class VendingMachineController {
         return moneyEntered;
     }
 
-    private void listAllProducts() throws VendingMachinePersistenceException {
+    private BigDecimal addMoreMoney(BigDecimal moneyEntered, String productPrice) {
+        //display ammount entered
+        view.displayAmountEntered(moneyEntered);
+        //ask if user wants to add more money or not
+        //returns null if user dont want to add more money
+        BigDecimal extraMoney = view.displayWhetherToAddMoreMoney(moneyEntered, productPrice);
+
+        //return extra money
+        return extraMoney;
+    }
+
+    private void listAllProducts(BigDecimal moneyInVendingMachine) throws VendingMachinePersistenceException {
         //list all products
-        view.displayVendingMachineProducts(service.getAllProducts());
+        view.displayVendingMachineProducts(service.getAllProducts(), moneyInVendingMachine);
     }
 
     private void saveInventory() throws VendingMachinePersistenceException {

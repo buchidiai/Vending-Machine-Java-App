@@ -5,7 +5,10 @@
  */
 package com.aspire.vendingmachine.ui;
 
+import com.aspire.vendingmachine.dto.Change;
 import com.aspire.vendingmachine.dto.Product;
+import com.aspire.vendingmachine.dto.Response;
+import com.aspire.vendingmachine.util.Util;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -36,37 +39,54 @@ public class VendingMachineView {
 
     }
 
-    public void displayVendingMachineProducts(List<Product> products) {
-
+    public void displayVendingMachineProducts(List<Product> products, BigDecimal moneyInMachine) {
+        //display header for fields
         io.print("____________________________________________");
         System.out.printf("|%5s|%13s|%10s|%8s \n", "Choice", "Name", "Price", "Qty");
         io.print("--------------------------------------------");
+        //initiize product
         Product p;
 
         for (int i = 0; i < products.size(); i++) {
+            //set product in array
             p = products.get(i);
+            //display projecy
             displayProducts(i, p.getProductName(), p.getPrice(), p.getQuantity());
         }
+        displaySpace();
+        //display amount of money in machine
+        io.print("There is " + Util.appendToMoney(moneyInMachine) + " in this machine");
 
     }
 
     private void displayProducts(int index, String productName, BigDecimal price, int quantity) {
-        String currency = price.compareTo(new BigDecimal("1.00")) > 0 ? "$" + price : "₵" + price;
-        String soldOut = quantity == 0 ? "sold out" : String.valueOf(quantity);
-
-        System.out.printf("|%-6d|%13s|%10s|%10s \n", index + 1, productName, currency, soldOut);
+        //display products formatted
+        System.out.printf("|%-6d|%13s|%10s|%10s \n", index + 1, productName, Util.appendToMoney(price), quantity == 0 ? "sold out" : String.valueOf(quantity));
     }
 
-    public void displayDispensingItemAndChange(String[] productName) {
+    public void displayDispensingItemAndChange(Response response) {
+        //display product name
+        displayDispensingItem(response.getProductName());
+        //display changed returned
+        displayDispensingChange(response.getMoneyEntered(), response.getChange());
+
+    }
+
+    private void displayDispensingItem(String productName) {
 
         io.print("*******************************************");
         io.print("      *******************************      ");
         io.print("      *******************************      ");
-        io.print("            Dispensing " + productName[0] + "       ");
+        io.print("            Dispensing " + productName + "       ");
         io.print("      *******************************      ");
         io.print("      *******************************      ");
+    }
+
+    private void displayDispensingChange(BigDecimal moneyEntered, Change change) {
+
+        io.print("            You enterted $" + moneyEntered + "       ");
         io.print("*******************************************");
-        displayChange(productName[1]);
+        displayChange(change);
         io.print("*******************************************");
         io.print("*******************************************");
 
@@ -76,25 +96,29 @@ public class VendingMachineView {
         io.readString("Press Enter to continue");
     }
 
-    public void displayChange(String changeAmount) {
+    public void displayChange(Change changeAmount) {
 
-        String[] result = changeAmount.split(",");
+        //set change denomination
+        BigDecimal quarter = changeAmount.getQuarters();
+        BigDecimal nickel = changeAmount.getNickels();
+        BigDecimal dime = changeAmount.getDimes();
+        BigDecimal penny = changeAmount.getPennies();
 
-        boolean changeDue = true;
+        //value to be compared to denominations
+        BigDecimal compareValue = new BigDecimal("0");
 
-        for (String s : result) {
+        //display if chnage is due
+        boolean ischangeDue = true;
 
-            if (Integer.parseInt(s) > 0) {
-                changeDue = false;
-            }
-
+        if (quarter.compareTo(compareValue) > 0 || nickel.compareTo(compareValue) > 0 || dime.compareTo(compareValue) > 0 || penny.compareTo(compareValue) > 0) {
+            ischangeDue = false;
         }
 
-        if (changeDue == false) {
-            io.print("              " + result[0] + " x " + "Quarters" + "       ");
-            io.print("              " + result[1] + " x " + "Dimes" + "       ");
-            io.print("              " + result[2] + " x " + "Nickels" + "       ");
-            io.print("              " + result[3] + " x " + "Pennies" + "       ");
+        if (ischangeDue == false) {
+            io.print("              " + quarter + " x " + "Quarters" + "        ");
+            io.print("              " + dime + " x " + "Dimes" + "       ");
+            io.print("              " + nickel + " x " + "Nickels" + "       ");
+            io.print("              " + penny + " x " + "Pennies" + "       ");
         } else {
             io.print("     No Change due, Thank you come Again     ");
 
@@ -111,19 +135,110 @@ public class VendingMachineView {
     public BigDecimal getMoneyInserted() {
 
         displaySpace();
-
-        BigDecimal moneyEntered = io.readBigDecimal("Please enter some money to get a Product. (1.45)");
+//get money entered
+        BigDecimal moneyEntered = io.readBigDecimal("Please enter some money to get a Product:  e.g - [1.45]");
         if (moneyEntered == null) {
 
             return moneyEntered;
         } else {
-            String currency = moneyEntered.compareTo(new BigDecimal("1.00")) > 0 ? "$" : "₵";
 
-            io.print("You entered " + currency + moneyEntered);
+            displayAmountEntered(moneyEntered);
 
         }
         displaySpace();
         return moneyEntered;
+
+    }
+
+    public BigDecimal getMoneyInserted(BigDecimal moneyNeeded) {
+
+        displaySpace();
+
+        BigDecimal moneyEntered = io.readBigDecimal("Please enter " + Util.appendToMoney(moneyNeeded) + " to get your product");
+        if (moneyEntered == null) {
+
+            return moneyEntered;
+        } else {
+
+            displayAmountEntered(moneyEntered);
+
+        }
+        displaySpace();
+        return moneyEntered;
+
+    }
+
+    public void displayAmountEntered(BigDecimal moneyEntered) {
+
+        io.print("You entered " + Util.appendToMoney(moneyEntered));
+    }
+
+    public BigDecimal displayWhetherToAddMoreMoney(BigDecimal moneyEntered, String productPrice) {
+        //intitlize extra Money
+        BigDecimal extraMoney = null;
+        //validate input
+        boolean isvalid = true;
+
+        //convert  String product price from error throw for insufficent funds  to BigDecimal
+        BigDecimal productPrice_Converted = new BigDecimal(productPrice.trim());
+
+        //calculaye money needed
+        BigDecimal moneyNeeded = (productPrice_Converted.subtract(moneyEntered));
+
+        //display money needed
+        io.print("You need " + Util.appendToMoney(moneyNeeded));
+
+        while (isvalid) {
+
+            //ask to add money or not
+            String response = io.readString("Would you like to add more money?: (y/n)");
+
+            //check is response is a number or empty string
+            if (Util.isNumeric(response) || response.trim().isEmpty()) {
+
+                io.print("Please no numbers or special characters, enter (y/n)");
+                //send them back up to try again
+                continue;
+
+            } else {
+                //check if response is yes or no
+                if (response.toLowerCase().charAt(0) == 'y' || response.toLowerCase().charAt(0) == 'n') {
+
+                    //if yes
+                    if (response.toLowerCase().charAt(0) == 'y') {
+                        //answer is yes
+                        //set extra money to money inserted
+                        extraMoney = getMoneyInserted(moneyNeeded);
+                        //exit while loop
+                        isvalid = false;
+                    } else {
+                        //user doesnt want to add money
+                        //display their refund
+                        displayRefundingMoney(moneyEntered);
+                        //exit while loop
+                        isvalid = false;
+                        //set extra money to null becuase they have been refunded
+                        extraMoney = null;
+                    }
+
+                } else {
+                    //entered something other than yes or no
+                    io.print("Please enter (y/n)");
+                    continue;
+                }
+
+            }
+
+            isvalid = false;
+
+        }
+
+        return extraMoney;
+    }
+
+    public void displayRefundingMoney(BigDecimal moneyEntered) {
+        //dsiplay money entered and change
+        displayDispensingChange(moneyEntered, new Change(moneyEntered));
 
     }
 
@@ -150,10 +265,14 @@ public class VendingMachineView {
     }
 
     public void displayErrorMessage(String errorMsg) {
+
+        io.print("*******************************************");
+        io.print("***************** ERROR *****************");
+        io.print("      *******************************      ");
+        io.print("*********** " + errorMsg + " ***********");
+        io.print("      *******************************      ");
         displaySpace();
-        io.print("=== ERROR ===");
-        io.print(errorMsg);
-        displaySpace();
+        io.readString("Press Enter to continue");
     }
 
 }

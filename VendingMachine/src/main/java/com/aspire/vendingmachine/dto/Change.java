@@ -41,21 +41,25 @@ public class Change {
         while (amount.compareTo(Denomination.QUARTER.value()) > 0) {
             this.quarters = quarters.add(BigDecimal.ONE);
             amount = amount.subtract(Denomination.QUARTER.value());
+
         }
 
         while (amount.compareTo(Denomination.DIME.value()) > 0) {
             this.dimes = dimes.add(BigDecimal.ONE);
             amount = amount.subtract(Denomination.DIME.value());
+
         }
 
         while (amount.compareTo(Denomination.NICKEL.value()) > 0) {
             this.nickels = nickels.add(BigDecimal.ONE);
             amount = amount.subtract(Denomination.NICKEL.value());
+
         }
 
-        while (amount.compareTo(Denomination.PENNY.value()) > 0) {
+        while (amount.compareTo(Denomination.PENNY.value()) >= 0) {
             this.pennies = pennies.add(BigDecimal.ONE);
             amount = amount.subtract(Denomination.PENNY.value());
+
         }
 
     }

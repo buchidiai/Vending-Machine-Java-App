@@ -10,6 +10,7 @@ import com.aspire.vendingmachine.dao.VendingMachineDao;
 import com.aspire.vendingmachine.dao.VendingMachinePersistenceException;
 import com.aspire.vendingmachine.dto.Change;
 import com.aspire.vendingmachine.dto.Product;
+import com.aspire.vendingmachine.dto.Response;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
     }
 
     @Override
-    public String[] sellProduct(BigDecimal moneyInserted, int userSelection) throws VendingMachineInsufficentFundsException, VendingMachinePersistenceException, VendingMachineNoItemInventoryException {
+    public Response sellProduct(BigDecimal moneyInserted, int userSelection) throws VendingMachineInsufficentFundsException, VendingMachinePersistenceException, VendingMachineNoItemInventoryException {
         ;
         //money inserted
         moneyInsertedbyUser = moneyInserted;
@@ -37,23 +38,24 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         //all products
         List<Product> products = dao.getAllProducts();
 
-        //Response
-        String[] response = new String[2];
+        //response
+        Response response = null;
 
-        //
         boolean isValid = true;
 
         //product
         Product productChoice = products.get(userSelection - 1);
         //product price
         BigDecimal productPrice = productChoice.getPrice();
+        //product name
+        String productName = productChoice.getProductName();
 
         while (isValid) {
 
             //check quantity
             if (productChoice.getQuantity() == 0) {
 
-                throw new VendingMachineNoItemInventoryException("Sorry " + productChoice.getProductName() + " is currently sold out.");
+                throw new VendingMachineNoItemInventoryException(productName + " is sold out");
 
             } else {
                 //product is in inventory
@@ -62,7 +64,7 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
                 //throw VendingMachineInsufficentFundsException error
                 if (productPrice.compareTo(moneyInserted) > 0) {
 
-                    throw new VendingMachineInsufficentFundsException("Insufficent funds.");
+                    throw new VendingMachineInsufficentFundsException("Insufficent funds, " + productPrice);
 
                 } else if (productPrice.compareTo(moneyInserted) <= 0) {
                     //money inserted is less than or equal  product price
@@ -70,14 +72,11 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
                     //change due
                     BigDecimal moneyLeft = moneyInserted.subtract(productPrice);
 
-                    Change change = new Change(moneyLeft);
-
                     //decrement quantity
                     productChoice.decrementQuantity();
 
-                    //set change due and product name
-                    response[0] = productChoice.getProductName();
-                    response[1] = change.toString();
+                    //set moneyInsertedbyUser change due in denomination and full amount and product name
+                    response = new Response(moneyInsertedbyUser, new Change(moneyLeft), moneyLeft, productName);
 
                     auditDao.writeAuditEntry(moneyLeft, productChoice);
 

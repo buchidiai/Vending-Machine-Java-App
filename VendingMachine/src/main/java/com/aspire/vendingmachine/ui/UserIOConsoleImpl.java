@@ -6,6 +6,7 @@
 package com.aspire.vendingmachine.ui;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Scanner;
 
 /**
@@ -91,6 +92,7 @@ public class UserIOConsoleImpl implements UserIO {
     public BigDecimal readBigDecimal(String prompt) {
 
         BigDecimal result = new BigDecimal("0");
+
         String value = "";
 
         boolean valid = true;
@@ -103,14 +105,14 @@ public class UserIOConsoleImpl implements UserIO {
                 this.print("Press q to quit");
                 value = in.nextLine();
 
-                if (value.charAt(0) == 'q' || value.charAt(0) == 'Q') {
+                if (value.toLowerCase().charAt(0) == 'q') {
                     return null;
                 } else {
                     if (value.length() == 1) {
                         this.print("Must be a valid currency amount");
                         continue;
                     } else {
-                        result = new BigDecimal(value);
+                        result = new BigDecimal(value).setScale(2, RoundingMode.CEILING);
                         valid = false;
                     }
 

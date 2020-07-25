@@ -7,6 +7,7 @@ package com.aspire.vendingmachine.service;
 
 import com.aspire.vendingmachine.dao.VendingMachinePersistenceException;
 import com.aspire.vendingmachine.dto.Product;
+import com.aspire.vendingmachine.dto.Response;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public interface VendingMachineServiceLayer {
 
-    String[] sellProduct(BigDecimal moneyInserted, int userSelection) throws
+    Response sellProduct(BigDecimal moneyInserted, int userSelection) throws
             VendingMachineInsufficentFundsException,
             VendingMachinePersistenceException,
             VendingMachineNoItemInventoryException;
