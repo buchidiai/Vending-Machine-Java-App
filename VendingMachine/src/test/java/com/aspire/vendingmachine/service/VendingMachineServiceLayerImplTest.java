@@ -84,4 +84,83 @@ public class VendingMachineServiceLayerImplTest {
         assertTrue(service.getAllProducts().contains(testProduct),
                 "The one product should be Gum.");
     }
+
+//    @Test
+//    public void testDecrementQuaitity() throws Exception {
+//        // Create our method test inputs
+//
+//        // -arrange
+//        //add product
+//        //productname
+//        String productName = "mint-gum";
+//        // price
+//        BigDecimal price = new BigDecimal("2.50");
+//        // quantity
+//        int quantity = 10;
+//        Product productToBeSold = new Product(productName, price, quantity);
+//
+//        //add products to Dao
+//        testDao.addProduct(productToBeSold);
+//
+//        //price to be paid
+//        BigDecimal pricePaid = new BigDecimal("2.50");
+//
+//        //-act
+//        //sell product
+////        testDao.sellproduct(productToBeSold, pricePaid);
+//
+//
+//        // Get the product from the DAO
+//        Product retrievedProduct = testDao.getProduct(productName);
+//
+//        //-assert
+//        assertTrue(((quantity - 1) == retrievedProduct.getQuantity()),
+//                "Checking quantity decremented.");
+//
+//    }
+    @Test
+    public void testSellproduct() throws Exception {
+        // Create our method test inputs
+
+        // -arrange
+        //add product
+        //productname
+        String productName = "mint-gum";
+        // price
+        BigDecimal price = new BigDecimal("2.50");
+        // quantity
+        int quantity = 1;
+        Product productToBeSold = new Product(productName, price, quantity);
+
+        //i dont have a add product in service
+        //add products to Dao
+//        testDao.addProduct(productToBeSold);
+        //price to be paid
+        BigDecimal pricePaid = new BigDecimal("2.50");
+
+        //-act
+        //i dont have a get product in service
+        //sell product
+//        testDao.sellproduct(productToBeSold, pricePaid);
+        // Get the product from the DAO
+        Product retrievedProduct = testDao.getProduct(productName);
+
+        //-assert
+        //Check the data is equal
+        assertEquals(productToBeSold.getProductName(),
+                retrievedProduct.getProductName(),
+                "Checking product name.");
+
+        assertTrue(((quantity - 1) == retrievedProduct.getQuantity()),
+                "Checking quantity decremented.");
+
+        assertEquals(productToBeSold.getPrice(),
+                pricePaid,
+                "Checking product price.");
+
+        assertEquals(productToBeSold.getQuantity(),
+                retrievedProduct.getQuantity(),
+                "Checking product quantity.");
+
+    }
 }

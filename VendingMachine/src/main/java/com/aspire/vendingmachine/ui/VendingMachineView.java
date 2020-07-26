@@ -26,7 +26,6 @@ public class VendingMachineView {
 
     public void printWelcomeMessage() {
         displayVendingMachineWelcome();
-
     }
 
     public void displayVendingMachineWelcome() {
@@ -47,12 +46,18 @@ public class VendingMachineView {
         //initiize product
         Product p;
 
-        for (int i = 0; i < products.size(); i++) {
-            //set product in array
-            p = products.get(i);
-            //display projecy
-            displayProducts(i, p.getProductName(), p.getPrice(), p.getQuantity());
+        if (products.size() == 0) {
+            io.print("There are no items in this vending machine");
+
+        } else {
+            for (int i = 0; i < products.size(); i++) {
+                //set product in array
+                p = products.get(i);
+                //display projecy
+                displayProducts(i, p.getProductName(), p.getPrice(), p.getQuantity());
+            }
         }
+
         displaySpace();
         //display amount of money in machine
         io.print("There is " + Util.appendToMoney(moneyInMachine) + " in this machine");
@@ -88,7 +93,7 @@ public class VendingMachineView {
         io.print("            Your entered " + Util.appendToMoney(moneyEntered) + "       ");
         io.print("*******************************************");
         io.print("*******************************************");
-        io.print("            Your Change is " + Util.appendToMoney(fullChange) + "       ");
+        io.print("          Your Change is " + Util.appendToMoney(fullChange) + "       ");
 
         displayChange(change);
         io.print("*******************************************");
@@ -123,26 +128,11 @@ public class VendingMachineView {
         BigDecimal dime = changeAmount.getDimes();
         BigDecimal penny = changeAmount.getPennies();
 
-        //value to be compared to denominations
-        BigDecimal compareValue = new BigDecimal("0");
-
-        //display if chnage is due
-        boolean ischangeDue = true;
-
-        if (quarter.compareTo(compareValue) > 0 || nickel.compareTo(compareValue) > 0 || dime.compareTo(compareValue) > 0 || penny.compareTo(compareValue) > 0) {
-            ischangeDue = false;
-        }
-
-        if (ischangeDue == false) {
-            io.print("              " + quarter + " x " + "Quarters" + "        ");
-            io.print("              " + dime + " x " + "Dimes" + "       ");
-            io.print("              " + nickel + " x " + "Nickels" + "       ");
-            io.print("              " + penny + " x " + "Pennies" + "       ");
-        } else {
-            io.print("     No Change due, Thank you come Again     ");
-
-        }
-
+        io.print("              " + quarter + " x " + "Quarters" + "        ");
+        io.print("              " + dime + " x " + "Dimes" + "       ");
+        io.print("              " + nickel + " x " + "Nickels" + "       ");
+        io.print("              " + penny + " x " + "Pennies" + "       ");
+        io.print("          Thank you come Again!         ");
     }
 
     public int getProductSelection(List<Product> products) {
@@ -158,8 +148,7 @@ public class VendingMachineView {
         //get money entered
         BigDecimal moneyEntered = io.readBigDecimal("Please enter some money to get a Product:  e.g - [1.45]");
         if (moneyEntered == null) {
-            moneyEntered = null;
-            return moneyEntered;
+            return moneyEntered = null;
         } else {
 
             displayAmountEntered(moneyEntered);
@@ -178,8 +167,8 @@ public class VendingMachineView {
 
         //if money entered == null ~> this means the user want to exit program
         if (moneyEntered == null) {
-            moneyEntered = null;
-            return moneyEntered;
+            return moneyEntered = null;
+
         } else {
 
             displayAmountEntered(moneyEntered);

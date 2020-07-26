@@ -1,4 +1,4 @@
-Burger::4.67::5
+Burger::4.67::0
 HotDog::3.50::4
 Cigarettes::7.99::7
 Chips::3.50::2

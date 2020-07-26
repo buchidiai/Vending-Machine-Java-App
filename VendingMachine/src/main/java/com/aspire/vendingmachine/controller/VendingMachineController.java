@@ -6,6 +6,7 @@
 package com.aspire.vendingmachine.controller;
 
 import com.aspire.vendingmachine.dao.VendingMachinePersistenceException;
+import com.aspire.vendingmachine.dto.Product;
 import com.aspire.vendingmachine.dto.Response;
 import com.aspire.vendingmachine.service.VendingMachineInsufficentFundsException;
 import com.aspire.vendingmachine.service.VendingMachineNoItemInventoryException;
@@ -88,10 +89,14 @@ public class VendingMachineController {
         view.displaySpace();
 
         try {
+
+            //get product
+            Product foundProduct = service.getProduct(userSelection);
+
             //sell product to user
             //@param Big decimal money entered & int userSelection from index of products
             //returns change and product name sold
-            Response response = service.sellProduct(moneyEntered, userSelection);
+            Response response = service.sellProduct(moneyEntered, foundProduct);
 
             //display change and product sold
             view.displayDispensingItemAndChange(response);
@@ -109,50 +114,8 @@ public class VendingMachineController {
             displayError(e.getMessage().split(",")[0]);
 
         } finally {
-
-            //if error occured
-            //check the type and do stuff
-            if (hasError) {
-                //if error type is insuffiecent funds
-                //ask for more money
-
-                if (errortype.equals(VendingMachineInsufficentFundsException.class.getSimpleName())) {
-
-                    try {
-                        //get extra more so user can get product
-                        BigDecimal extraMoney = addMoreMoney(moneyEntered, productPrice);
-
-                        //
-                        //
-                        //better logic
-                        //if extra money == 0 set  moneyEntered = BigDecimal.ZERO because money has been refunded
-                        //
-                        //
-                        //
-                        //add existing money to extra money added
-                        moneyEntered = moneyEntered.add(extraMoney);
-
-                    } catch (Exception e) {
-                        //will throw exception if the user  doesnt want to add more money (user enters no) or quits
-                        //already display refunding money to user
-                        //set money in machine back to 0.00
-
-                        if (e.getClass().getSimpleName().equals("NullPointerException")) {
-
-                            moneyEntered = BigDecimal.ZERO;
-                        }
-
-                    }
-                    //set entered money plus extra to moneyEntered
-                    return moneyEntered;
-
-                }
-
-            } else {
-                //no error all money used up
-                moneyEntered = BigDecimal.ZERO;
-            }
-
+            //does clean up catch errors/ get more money or close program
+            moneyEntered = cleanUp(hasError, errortype, moneyEntered, productPrice);
         }
 
         return moneyEntered;
@@ -197,6 +160,53 @@ public class VendingMachineController {
 
     private void displayError(String error) {
         view.displayErrorMessage(error);
+    }
+
+    private BigDecimal cleanUp(boolean hasError, String errortype, BigDecimal moneyEntered, String productPrice) {
+
+        //if error occured
+        //check the type and do stuff
+        if (hasError) {
+            //if error type is insuffiecent funds
+            //ask for more money
+
+            if (errortype.equals(VendingMachineInsufficentFundsException.class.getSimpleName())) {
+
+                try {
+                    //get extra more so user can get product
+                    BigDecimal extraMoney = addMoreMoney(moneyEntered, productPrice);
+
+                    //
+                    //
+                    //better logic ?
+                    //if extra money == 0 set  moneyEntered = BigDecimal.ZERO because money has been refunded
+                    //
+                    //
+                    //
+                    //add existing money to extra money added
+                    moneyEntered = moneyEntered.add(extraMoney);
+
+                } catch (Exception e) {
+                    //will throw exception if the user  doesnt want to add more money (user enters no) or quits
+                    //already display refunding money to user
+                    //set money in machine back to 0.00
+
+                    if (e.getClass().getSimpleName().equals("NullPointerException")) {
+
+                        moneyEntered = BigDecimal.ZERO;
+                    }
+
+                }
+                //set entered money plus extra to moneyEntered
+                return moneyEntered;
+
+            }
+
+        } else {
+            //no error all money used up
+            moneyEntered = BigDecimal.ZERO;
+        }
+        return moneyEntered;
     }
 
 }

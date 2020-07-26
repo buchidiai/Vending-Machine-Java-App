@@ -40,10 +40,10 @@ public interface VendingMachineDao {
     /**
      * Returns a Products in the vending machine.
      *
-     * @param Product to retrieve
+     * @param userSelection to retrieve product by index
      * @return product from vending machine.
      */
-    Product getProduct(Product product) throws VendingMachinePersistenceException;
+    Product getProduct(int userSelection) throws VendingMachinePersistenceException;
 
     /**
      * Decrement a Product's quantity after a sale.
@@ -51,7 +51,7 @@ public interface VendingMachineDao {
      * @param product the quantity of the product will decrement by 1
      * @return boolean.
      */
-    boolean decrementQuantity(Product product) throws VendingMachineNoItemInventoryException;
+    boolean decrementQuantity(Product product) throws VendingMachineNoItemInventoryException, VendingMachinePersistenceException;
 ;
 
 }

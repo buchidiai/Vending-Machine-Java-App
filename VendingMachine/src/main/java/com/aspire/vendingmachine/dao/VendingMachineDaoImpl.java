@@ -43,38 +43,39 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
         loadProducts();
         boolean newProduct = products.add(product);
         writeProducts();
-
         return newProduct;
     }
 
     @Override
     public List<Product> getAllProducts() throws VendingMachinePersistenceException {
         loadProducts();
-
         return products;
 
     }
 
     @Override
-    public Product getProduct(Product product) throws VendingMachinePersistenceException {
+    public Product getProduct(int userSelection) throws VendingMachinePersistenceException {
 
-        Product found = null;
-        for (Product p : products) {
-            if (p.getProductName().equals(product.getProductName())) {
-                found = p;
-            }
-        }
-        return found;
+        return products.get(userSelection - 1);
     }
 
     @Override
-    public boolean decrementQuantity(Product product) throws VendingMachineNoItemInventoryException {
+    public boolean decrementQuantity(Product product) throws VendingMachineNoItemInventoryException, VendingMachinePersistenceException {
 
         if (product.getQuantity() == 0) {
-            throw new VendingMachineNoItemInventoryException("Sorry were out of " + product.getProductName());
+            throw new VendingMachineNoItemInventoryException(product.getProductName() + " is sold out");
         }
+        //find product in products arraylist
+        Product productTodecrement = products.stream()
+                .filter(p -> p.getProductName().equals(product.getProductName()))
+                .findAny()
+                .orElse(null);
 
-        return product.decrementQuantity();
+        //write update to file
+        writeProducts();
+
+        //return boolean if its was secuessful
+        return productTodecrement.decrementQuantity() ? true : false;
     }
 
     @Override

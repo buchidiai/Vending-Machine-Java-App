@@ -17,12 +17,18 @@ import java.util.List;
  */
 public interface VendingMachineServiceLayer {
 
-    Response sellProduct(BigDecimal moneyInserted, int userSelection) throws
+    Response sellProduct(BigDecimal moneyInserted, Product product) throws
             VendingMachineInsufficentFundsException,
             VendingMachinePersistenceException,
             VendingMachineNoItemInventoryException;
 
+    Product getProduct(int userSelection) throws
+            VendingMachinePersistenceException,
+            VendingMachineNoItemInventoryException;
+
     List<Product> getAllProducts() throws VendingMachinePersistenceException;
+
+    boolean decrementProductQuantity(Product product) throws VendingMachineNoItemInventoryException, VendingMachinePersistenceException;
 
     void saveInventory() throws VendingMachinePersistenceException;
 
