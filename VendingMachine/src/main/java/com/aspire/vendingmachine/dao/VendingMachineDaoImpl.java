@@ -139,13 +139,17 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
 
         Product productFromFile = null;
 
+        String productName = "";
+
+        int count = 0;
+
         if (productTokens.length == NUMBER_OF_FIELDS) {
 
             //on load up size is zero so read from file
             if (products.size() == 0) {
 
                 //product name
-                String productName = Util.replaceSpecialCharacters(productTokens[0]);
+                productName = Util.replaceSpecialCharacters(productTokens[0]);
 
                 //produce price
                 BigDecimal productPrice = new BigDecimal(productTokens[1]);
@@ -170,18 +174,28 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
 
                     } else {
 
-                        //product name
-                        String productName = Util.replaceSpecialCharacters(productTokens[0]);
+                        try {
+                            //product name
+                            productName = Util.replaceSpecialCharacters(productTokens[0]);
 
-                        //produce price
-                        BigDecimal productPrice = new BigDecimal(productTokens[1]);
+                            //produce price
+                            BigDecimal productPrice = new BigDecimal(productTokens[1]);
 
-                        //product quantity
-                        int quantity = Integer.parseInt(productTokens[2]);
+                            //product quantity
+                            int quantity = Integer.parseInt(productTokens[2]);
 
-                        // Which we can then use to create a new Product object to satisfy
-                        // the requirements of the Product constructor.
-                        productFromFile = new Product(productName, productPrice, quantity);
+                            // Which we can then use to create a new Product object to satisfy
+                            // the requirements of the Product constructor.
+                            productFromFile = new Product(productName, productPrice, quantity);
+                        } catch (Exception e) {
+                            count++;
+
+                            if (count <= 1) {
+                                System.out.println("");
+                                System.out.println("Unable to load " + productName + ", it has been removed from inventory");
+                            }
+
+                        }
 
                     }
 

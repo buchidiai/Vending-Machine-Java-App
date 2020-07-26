@@ -24,49 +24,15 @@ public class VendingMachineView {
         this.io = io;
     }
 
-    public void printWelcomeMessage() {
-        displayVendingMachineWelcome();
-    }
-
-    public void displayVendingMachineWelcome() {
-        io.print("*******************************************************************\n"
-                + "*******************************************************************");
-        io.print("******** Welcome To The Best Vending Machine In The World *********");
-        io.print("***************** We have Everything!! Literally ******************");
-        io.print("*******************************************************************\n"
-                + "*******************************************************************");
-
-    }
-
-    public void displayVendingMachineProducts(List<Product> products, BigDecimal moneyInMachine) {
-        //display header for fields
-        io.print("____________________________________________");
-        System.out.printf("|%5s|%13s|%10s|%8s \n", "Choice", "Name", "Price", "Qty");
-        io.print("--------------------------------------------");
-        //initiize product
-        Product p;
-
-        if (products.size() == 0) {
-            io.print("There are no items in this vending machine");
-
-        } else {
-            for (int i = 0; i < products.size(); i++) {
-                //set product in array
-                p = products.get(i);
-                //display projecy
-                displayProducts(i, p.getProductName(), p.getPrice(), p.getQuantity());
-            }
-        }
+    public int getProductSelection(List<Product> products) {
 
         displaySpace();
-        //display amount of money in machine
-        io.print("There is " + Util.appendToMoney(moneyInMachine) + " in this machine");
+        return io.readInt("Please choose from one of our products:", 1, products.size());
 
     }
 
-    private void displayProducts(int index, String productName, BigDecimal price, int quantity) {
-        //display products formatted
-        System.out.printf("|%-6d|%13s|%10s|%10s \n", index + 1, productName, Util.appendToMoney(price), quantity == 0 ? "sold out" : String.valueOf(quantity));
+    public void displaySpace() {
+        io.print("");
     }
 
     public void displayDispensingItemAndChange(Response response) {
@@ -75,70 +41,6 @@ public class VendingMachineView {
         displayDispensingItem(response.getProductName());
         //display changed returned
         displayDispensingChange(response.getMoneyEntered(), response.getChange(), response.getFullChange());
-
-    }
-
-    private void displayDispensingItem(String productName) {
-
-        io.print("*******************************************");
-        io.print("      *******************************      ");
-        io.print("      *******************************      ");
-        io.print("            Dispensing " + productName + "       ");
-        io.print("      *******************************      ");
-        io.print("      *******************************      ");
-    }
-
-    private void displayDispensingChange(BigDecimal moneyEntered, Change change, BigDecimal fullChange) {
-
-        io.print("            Your entered " + Util.appendToMoney(moneyEntered) + "       ");
-        io.print("*******************************************");
-        io.print("*******************************************");
-        io.print("          Your Change is " + Util.appendToMoney(fullChange) + "       ");
-
-        displayChange(change);
-        io.print("*******************************************");
-        io.print("*******************************************");
-
-        displaySpace();
-        displaySpace();
-
-        io.readString("Press Enter to continue");
-    }
-
-    private void displayDispensingChange(BigDecimal moneyEntered, Change change) {
-
-        io.print("            You enterted $" + moneyEntered + "       ");
-        io.print("*******************************************");
-        io.print("*******************************************");
-        displayChange(change);
-        io.print("*******************************************");
-        io.print("*******************************************");
-
-        displaySpace();
-        displaySpace();
-
-        io.readString("Press Enter to continue");
-    }
-
-    public void displayChange(Change changeAmount) {
-
-        //set change denomination
-        BigDecimal quarter = changeAmount.getQuarters();
-        BigDecimal nickel = changeAmount.getNickels();
-        BigDecimal dime = changeAmount.getDimes();
-        BigDecimal penny = changeAmount.getPennies();
-
-        io.print("              " + quarter + " x " + "Quarters" + "        ");
-        io.print("              " + dime + " x " + "Dimes" + "       ");
-        io.print("              " + nickel + " x " + "Nickels" + "       ");
-        io.print("              " + penny + " x " + "Pennies" + "       ");
-        io.print("          Thank you come Again!         ");
-    }
-
-    public int getProductSelection(List<Product> products) {
-
-        displaySpace();
-        return io.readInt("Please choose from one of our products:", 1, products.size());
 
     }
 
@@ -159,23 +61,17 @@ public class VendingMachineView {
 
     }
 
-    public BigDecimal getMoneyInserted(BigDecimal moneyNeeded) {
+    public void printWelcomeMessage() {
+        displayVendingMachineWelcome();
+    }
 
-        displaySpace();
-
-        BigDecimal moneyEntered = io.readBigDecimal("Please enter " + Util.appendToMoney(moneyNeeded) + " to get your product");
-
-        //if money entered == null ~> this means the user want to exit program
-        if (moneyEntered == null) {
-            return moneyEntered = null;
-
-        } else {
-
-            displayAmountEntered(moneyEntered);
-
-        }
-        displaySpace();
-        return moneyEntered;
+    public void displayVendingMachineWelcome() {
+        io.print("*******************************************************************\n"
+                + "*******************************************************************");
+        io.print("******** Welcome To The Best Vending Machine In The World *********");
+        io.print("***************** We have Everything!! Literally ******************");
+        io.print("*******************************************************************\n"
+                + "*******************************************************************");
 
     }
 
@@ -253,16 +149,120 @@ public class VendingMachineView {
         return extraMoney;
     }
 
-    public void displayRefundingMoney(BigDecimal moneyEntered) {
+    public void displayVendingMachineProducts(List<Product> products, BigDecimal moneyInMachine) {
+        //display header for fields
+        io.print("____________________________________________");
+        System.out.printf("|%5s|%13s|%10s|%8s \n", "Choice", "Name", "Price", "Qty");
+        io.print("--------------------------------------------");
+        //initiize product
+        Product p;
+
+        if (products.size() == 0) {
+            io.print("There are no items in this vending machine");
+
+        } else {
+            for (int i = 0; i < products.size(); i++) {
+                //set product in array
+                p = products.get(i);
+                //display projecy
+                displayProducts(i, p.getProductName(), p.getPrice(), p.getQuantity());
+            }
+        }
+
+        displaySpace();
+        //display amount of money in machine
+        io.print("There is " + Util.appendToMoney(moneyInMachine) + " in this machine");
+
+    }
+
+    private void displayProducts(int index, String productName, BigDecimal price, int quantity) {
+        //display products formatted
+        System.out.printf("|%-6d|%13s|%10s|%10s \n", index + 1, productName, Util.appendToMoney(price), quantity == 0 ? "sold out" : String.valueOf(quantity));
+    }
+
+    private void displayDispensingItem(String productName) {
+
+        io.print("*******************************************");
+        io.print("      *******************************      ");
+        io.print("      *******************************      ");
+        io.print("            Dispensing " + productName + "       ");
+        io.print("      *******************************      ");
+        io.print("      *******************************      ");
+    }
+
+    private void displayDispensingChange(BigDecimal moneyEntered, Change change, BigDecimal fullChange) {
+
+        io.print("            Your entered " + Util.appendToMoney(moneyEntered) + "       ");
+        io.print("*******************************************");
+        io.print("*******************************************");
+        io.print("          Your Change is " + Util.appendToMoney(fullChange) + "       ");
+
+        displayChange(change);
+        io.print("*******************************************");
+        io.print("*******************************************");
+
+        displaySpace();
+        displaySpace();
+
+        io.readString("Press Enter to continue");
+    }
+
+    private void displayDispensingChange(BigDecimal moneyEntered, Change change) {
+
+        io.print("            You enterted $" + moneyEntered + "       ");
+        io.print("*******************************************");
+        io.print("*******************************************");
+        displayChange(change);
+        io.print("*******************************************");
+        io.print("*******************************************");
+
+        displaySpace();
+        displaySpace();
+
+        io.readString("Press Enter to continue");
+    }
+
+    private void displayChange(Change changeAmount) {
+
+        //set change denomination
+        BigDecimal quarter = changeAmount.getQuarters();
+        BigDecimal nickel = changeAmount.getNickels();
+        BigDecimal dime = changeAmount.getDimes();
+        BigDecimal penny = changeAmount.getPennies();
+
+        io.print("              " + quarter + " x " + "Quarters" + "        ");
+        io.print("              " + dime + " x " + "Dimes" + "       ");
+        io.print("              " + nickel + " x " + "Nickels" + "       ");
+        io.print("              " + penny + " x " + "Pennies" + "       ");
+        io.print("          Thank you come Again!         ");
+    }
+
+    private BigDecimal getMoneyInserted(BigDecimal moneyNeeded) {
+
+        displaySpace();
+
+        BigDecimal moneyEntered = io.readBigDecimal("Please enter " + Util.appendToMoney(moneyNeeded) + " to get your product");
+
+        //if money entered == null ~> this means the user want to exit program
+        if (moneyEntered == null) {
+            return moneyEntered = null;
+
+        } else {
+
+            displayAmountEntered(moneyEntered);
+
+        }
+        displaySpace();
+        return moneyEntered;
+
+    }
+
+    private void displayRefundingMoney(BigDecimal moneyEntered) {
         io.print("*******************************************");
         io.print("***** Ok, your money will be refunded *****");
         //dsiplay money entered and change
         displayDispensingChange(moneyEntered, new Change(moneyEntered));
 
-    }
-
-    public void displaySpace() {
-        io.print("");
     }
 
     public void displayExitBanner() {
@@ -272,15 +272,9 @@ public class VendingMachineView {
         displayBanner();
     }
 
-    public void displayBanner() {
+    private void displayBanner() {
         io.print("*******************************************\n"
                 + "*******************************************");
-    }
-
-    public void displayDispensingMessage() {
-        displaySpace();
-        io.print("=== DISPENSING ===");
-        displaySpace();
     }
 
     public void displayErrorMessage(String errorMsg) {
