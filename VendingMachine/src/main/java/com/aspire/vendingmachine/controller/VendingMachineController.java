@@ -40,7 +40,7 @@ public class VendingMachineController {
                 //only ask for money and lisy products if there no money in machine
                 //ask for user to enter money
                 //returns big decimal
-                if (moneyEntered.compareTo(new BigDecimal("0.00")) <= 0) {
+                if (moneyEntered.compareTo(BigDecimal.ZERO) <= 0) {
                     //list all rpoducts in inventory
                     listAllProducts(moneyEntered);
                     moneyEntered = getMoneyInserted();
@@ -137,7 +137,6 @@ public class VendingMachineController {
                         //already display refunding money to user
                         //set money in machine back to 0.00
 
-                        //if error is null pointer set money in machine so user can still buy product
                         if (e.getClass().getSimpleName().equals("NullPointerException")) {
 
                             moneyEntered = BigDecimal.ZERO;

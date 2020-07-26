@@ -39,11 +39,12 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
     }
 
     @Override
-    public void addProduct(Product product) throws VendingMachinePersistenceException {
+    public boolean addProduct(Product product) throws VendingMachinePersistenceException {
         loadProducts();
-        products.add(product);
+        boolean newProduct = products.add(product);
         writeProducts();
 
+        return newProduct;
     }
 
     @Override
@@ -55,11 +56,11 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
     }
 
     @Override
-    public Product getProduct(String productName) throws VendingMachinePersistenceException {
+    public Product getProduct(Product product) throws VendingMachinePersistenceException {
 
         Product found = null;
         for (Product p : products) {
-            if (p.getProductName().equals(productName)) {
+            if (p.getProductName().equals(product.getProductName())) {
                 found = p;
             }
         }
@@ -67,15 +68,18 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
     }
 
     @Override
-    public void decrementQuantity(Product product) throws VendingMachineNoItemInventoryException {
+    public boolean decrementQuantity(Product product) throws VendingMachineNoItemInventoryException {
 
         if (product.getQuantity() == 0) {
-
             throw new VendingMachineNoItemInventoryException("Sorry were out of " + product.getProductName());
-        } else {
-
-            product.decrementQuantity();
         }
+
+        return product.decrementQuantity();
+    }
+
+    @Override
+    public void updateinventory() throws VendingMachinePersistenceException {
+        writeProducts();
     }
 
     private void loadProducts() throws VendingMachinePersistenceException {
@@ -252,11 +256,6 @@ public class VendingMachineDaoImpl implements VendingMachineDao {
 
         // We have now turned a product to text! Return it!
         return productAsText;
-    }
-
-    @Override
-    public void updateinventory() throws VendingMachinePersistenceException {
-        writeProducts();
     }
 
 }

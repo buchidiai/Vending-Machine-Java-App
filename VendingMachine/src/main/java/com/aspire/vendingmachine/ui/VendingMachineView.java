@@ -32,8 +32,8 @@ public class VendingMachineView {
     public void displayVendingMachineWelcome() {
         io.print("*******************************************************************\n"
                 + "*******************************************************************");
-        System.out.println("******** Welcome To The Best Vending Machine In The World *********");
-        System.out.println("***************** We have Everything!! Literally ******************");
+        io.print("******** Welcome To The Best Vending Machine In The World *********");
+        io.print("***************** We have Everything!! Literally ******************");
         io.print("*******************************************************************\n"
                 + "*******************************************************************");
 
@@ -146,6 +146,7 @@ public class VendingMachineView {
     }
 
     public int getProductSelection(List<Product> products) {
+
         displaySpace();
         return io.readInt("Please choose from one of our products:", 1, products.size());
 

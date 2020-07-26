@@ -38,6 +38,8 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         //all products
         List<Product> products = dao.getAllProducts();
 
+        System.out.println("products size " + products);
+
         //response
         Response response = null;
 

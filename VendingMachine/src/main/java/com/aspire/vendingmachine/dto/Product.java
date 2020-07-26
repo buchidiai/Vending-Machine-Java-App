@@ -40,11 +40,14 @@ public class Product {
         return quantity;
     }
 
-    public void decrementQuantity() {
+    public boolean decrementQuantity() {
 
         if (this.quantity != 0) {
             this.quantity -= 1;
+            return true;
         }
+
+        return false;
 
     }
 

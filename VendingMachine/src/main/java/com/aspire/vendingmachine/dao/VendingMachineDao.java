@@ -19,9 +19,9 @@ public interface VendingMachineDao {
      * Add a Product to the vending machine.
      *
      * @param product product to be added to vending machine
-     * @return void.
+     * @return boolean.
      */
-    void addProduct(Product product) throws VendingMachinePersistenceException;
+    boolean addProduct(Product product) throws VendingMachinePersistenceException;
 
     /**
      * Update vending machine inventory from file.
@@ -40,25 +40,18 @@ public interface VendingMachineDao {
     /**
      * Returns a Products in the vending machine.
      *
-     * @param productName Name of product to to retrieve
+     * @param Product to retrieve
      * @return product from vending machine.
      */
-    Product getProduct(String productName) throws VendingMachinePersistenceException;
+    Product getProduct(Product product) throws VendingMachinePersistenceException;
 
-//    /**
-//     * Returns a Product from the vending machine.
-//     *
-//     * @param productName Name of product to retrieve
-//     * @return Product selected from the menu options.
-//     */
-//    Product sellproduct(Product product, BigDecimal moneyProvided) throws VendingMachinePersistenceException;
     /**
      * Decrement a Product's quantity after a sale.
      *
      * @param product the quantity of the product will decrement by 1
-     * @return void.
+     * @return boolean.
      */
-    void decrementQuantity(Product product) throws VendingMachineNoItemInventoryException;
+    boolean decrementQuantity(Product product) throws VendingMachineNoItemInventoryException;
 ;
 
 }
