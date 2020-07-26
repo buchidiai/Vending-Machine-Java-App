@@ -5,7 +5,7 @@ Chips::3.50::2
 IceCream::4.25::0
 Pizza::5.50::1
 Cupcake::4.75::7
-Apples(3pk)::3.50::4
+Apples3pk::3.50::4
 Socks::3.75::0
 Makeup::3.50::4
 Condoms::14.99::3

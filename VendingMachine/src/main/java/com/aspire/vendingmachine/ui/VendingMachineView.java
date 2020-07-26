@@ -65,10 +65,11 @@ public class VendingMachineView {
     }
 
     public void displayDispensingItemAndChange(Response response) {
+
         //display product name
         displayDispensingItem(response.getProductName());
         //display changed returned
-        displayDispensingChange(response.getMoneyEntered(), response.getChange());
+        displayDispensingChange(response.getMoneyEntered(), response.getChange(), response.getFullChange());
 
     }
 
@@ -82,9 +83,27 @@ public class VendingMachineView {
         io.print("      *******************************      ");
     }
 
+    private void displayDispensingChange(BigDecimal moneyEntered, Change change, BigDecimal fullChange) {
+
+        io.print("            Your entered " + Util.appendToMoney(moneyEntered) + "       ");
+        io.print("*******************************************");
+        io.print("*******************************************");
+        io.print("            Your Change is " + Util.appendToMoney(fullChange) + "       ");
+
+        displayChange(change);
+        io.print("*******************************************");
+        io.print("*******************************************");
+
+        displaySpace();
+        displaySpace();
+
+        io.readString("Press Enter to continue");
+    }
+
     private void displayDispensingChange(BigDecimal moneyEntered, Change change) {
 
         io.print("            You enterted $" + moneyEntered + "       ");
+        io.print("*******************************************");
         io.print("*******************************************");
         displayChange(change);
         io.print("*******************************************");
@@ -135,10 +154,10 @@ public class VendingMachineView {
     public BigDecimal getMoneyInserted() {
 
         displaySpace();
-//get money entered
+        //get money entered
         BigDecimal moneyEntered = io.readBigDecimal("Please enter some money to get a Product:  e.g - [1.45]");
         if (moneyEntered == null) {
-
+            moneyEntered = null;
             return moneyEntered;
         } else {
 
@@ -155,8 +174,10 @@ public class VendingMachineView {
         displaySpace();
 
         BigDecimal moneyEntered = io.readBigDecimal("Please enter " + Util.appendToMoney(moneyNeeded) + " to get your product");
-        if (moneyEntered == null) {
 
+        //if money entered == null ~> this means the user want to exit program
+        if (moneyEntered == null) {
+            moneyEntered = null;
             return moneyEntered;
         } else {
 
@@ -209,6 +230,13 @@ public class VendingMachineView {
                         //answer is yes
                         //set extra money to money inserted
                         extraMoney = getMoneyInserted(moneyNeeded);
+
+                        //extra money will be null if user wanted to exit while entering money
+                        if (extraMoney == null) {
+                            //display their refund
+                            displayRefundingMoney(moneyEntered);
+                        }
+
                         //exit while loop
                         isvalid = false;
                     } else {
@@ -232,11 +260,12 @@ public class VendingMachineView {
             isvalid = false;
 
         }
-
         return extraMoney;
     }
 
     public void displayRefundingMoney(BigDecimal moneyEntered) {
+        io.print("*******************************************");
+        io.print("***** Ok, your money will be refunded *****");
         //dsiplay money entered and change
         displayDispensingChange(moneyEntered, new Change(moneyEntered));
 

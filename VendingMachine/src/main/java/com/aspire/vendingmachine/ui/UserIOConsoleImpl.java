@@ -112,15 +112,25 @@ public class UserIOConsoleImpl implements UserIO {
                         this.print("Must be a valid currency amount");
                         continue;
                     } else {
-                        result = new BigDecimal(value).setScale(2, RoundingMode.CEILING);
-                        valid = false;
+                        result = new BigDecimal(value);
+
+                        //check if negative
+                        if (result.signum() == -1) {
+                            this.print("Must be a positive number");
+                            continue;
+                        } else {
+                            //not negative
+                            result = new BigDecimal(value).setScale(2, RoundingMode.CEILING);
+                            valid = false;
+                        }
+
                     }
 
                 }
 
             } catch (Exception e) {
 
-                this.print("Must be a valid currency amount");
+                this.print("Must be a valid currency amount, try again!");
                 continue;
             }
 

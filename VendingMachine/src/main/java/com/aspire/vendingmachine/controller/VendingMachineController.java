@@ -122,6 +122,13 @@ public class VendingMachineController {
                         //get extra more so user can get product
                         BigDecimal extraMoney = addMoreMoney(moneyEntered, productPrice);
 
+                        //
+                        //
+                        //better logic
+                        //if extra money == 0 set  moneyEntered = BigDecimal.ZERO because money has been refunded
+                        //
+                        //
+                        //
                         //add existing money to extra money added
                         moneyEntered = moneyEntered.add(extraMoney);
 
@@ -132,10 +139,7 @@ public class VendingMachineController {
 
                         //if error is null pointer set money in machine so user can still buy product
                         if (e.getClass().getSimpleName().equals("NullPointerException")) {
-                            System.out.println(" there was a NullPointerException money will be kept the same");
-                            moneyEntered = moneyEntered;
-                        } else {
-                            //get chose to exit program
+
                             moneyEntered = BigDecimal.ZERO;
                         }
 
