@@ -6,6 +6,7 @@
 package com.aspire.vendingmachine.dto;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  *
@@ -78,6 +79,39 @@ public class Change {
 
     public BigDecimal getPennies() {
         return pennies;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Change other = (Change) obj;
+        if (!Objects.equals(this.quarters, other.quarters)) {
+            return false;
+        }
+        if (!Objects.equals(this.dimes, other.dimes)) {
+            return false;
+        }
+        if (!Objects.equals(this.nickels, other.nickels)) {
+            return false;
+        }
+        if (!Objects.equals(this.pennies, other.pennies)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

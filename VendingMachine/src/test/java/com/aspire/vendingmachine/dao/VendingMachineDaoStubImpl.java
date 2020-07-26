@@ -20,7 +20,7 @@ public class VendingMachineDaoStubImpl implements VendingMachineDao {
     public Product onlyProduct;
 
     public VendingMachineDaoStubImpl() {
-        this.onlyProduct = new Product("Gum", new BigDecimal("2.50"), 10);
+        this.onlyProduct = new Product("Tacos", new BigDecimal("2.50"), 10);
     }
 
     public VendingMachineDaoStubImpl(Product testProduct) {
@@ -40,24 +40,30 @@ public class VendingMachineDaoStubImpl implements VendingMachineDao {
     @Override
     public List<Product> getAllProducts() throws VendingMachinePersistenceException {
         List<Product> productList = new ArrayList<>();
+        System.out.println("Here 1");
         productList.add(onlyProduct);
+        System.out.println("added " + onlyProduct);
         return productList;
-    }
-
-    @Override
-    public Product getProduct(Product product) throws VendingMachinePersistenceException {
-
-        if (product.getProductName().equals(onlyProduct.getProductName())) {
-            return onlyProduct;
-        } else {
-            return null;
-        }
     }
 
     @Override
     public boolean decrementQuantity(Product product) throws VendingMachineNoItemInventoryException {
 
-        return product.decrementQuantity() == true ? true : false;
+        //onlyproduct not used ?
+        return product.decrementQuantity() ? true : false;
     }
 
+    @Override
+    public Product getProduct(int userSelection) throws VendingMachinePersistenceException {
+        Product foundProduct = null;
+
+        //right way ?
+        List<Product> productList = new ArrayList<>();
+
+        productList.add(onlyProduct);
+
+        foundProduct = productList.get(userSelection);
+
+        return foundProduct;
+    }
 }

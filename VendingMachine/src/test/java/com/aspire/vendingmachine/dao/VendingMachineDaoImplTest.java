@@ -50,12 +50,15 @@ public class VendingMachineDaoImplTest {
 
         Product product = new Product(productName, price, quantity);
 
+        //1 not 0 ~> getProduct subtracts by 1 so we want the first item
+        int productIndex = 1;
+
         //-act
         //add product to Dao
         testDao.addProduct(product);
 
         // Get the product from the DAO
-        Product retrievedProduct = testDao.getProduct(product);
+        Product retrievedProduct = testDao.getProduct(productIndex);
 
         //-assert
         // Check the data is equal
@@ -113,6 +116,39 @@ public class VendingMachineDaoImplTest {
                 "The list of products should include Candy.");
         assertTrue(testDao.getAllProducts().contains(productB),
                 "The list of products should include Cookies.");
+
+    }
+
+    @Test
+    public void testDecrementQuaitity() throws Exception {
+        // Create our method test inputs
+
+        // -arrange
+        //add product
+        //productname
+        String productName = "mint-gum";
+        // price
+        BigDecimal price = new BigDecimal("2.50");
+        // quantity
+        int quantity = 10;
+
+        Product productToBeSold = new Product(productName, price, quantity);
+
+        //1 not 0 ~> getProduct subtracts by 1 so we want the first item
+        int productIndex = 1;
+
+        //add products to Dao
+        testDao.addProduct(productToBeSold);
+
+        //-act
+        testDao.decrementQuantity(productToBeSold);
+
+        // Get the product from the DAO
+        Product retrievedProduct = testDao.getProduct(productIndex);
+
+        //-assert
+        assertTrue(((quantity - 1) == retrievedProduct.getQuantity()),
+                "Checking quantity decremented.");
 
     }
 
