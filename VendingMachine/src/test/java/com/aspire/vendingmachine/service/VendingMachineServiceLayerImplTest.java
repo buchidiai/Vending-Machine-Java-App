@@ -5,9 +5,6 @@
  */
 package com.aspire.vendingmachine.service;
 
-import com.aspire.vendingmachine.dao.VendingMachineAuditDao;
-import com.aspire.vendingmachine.dao.VendingMachineDao;
-import com.aspire.vendingmachine.dao.VendingMachineDaoStubImpl;
 import com.aspire.vendingmachine.dao.VendingMachinePersistenceException;
 import com.aspire.vendingmachine.dto.Change;
 import com.aspire.vendingmachine.dto.Product;
@@ -18,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  *
@@ -29,10 +28,10 @@ public class VendingMachineServiceLayerImplTest {
 
     public VendingMachineServiceLayerImplTest() {
 
-        VendingMachineDao dao = new VendingMachineDaoStubImpl();
-        VendingMachineAuditDao auditDao = new VendingMachineAuditDaoStubImpl();
-
-        service = new VendingMachineServiceLayerImpl(dao, auditDao);
+        ApplicationContext ctx
+                = new ClassPathXmlApplicationContext("applicationContext.xml");
+        service
+                = ctx.getBean("myServiceLayer", VendingMachineServiceLayer.class);
 
     }
 
