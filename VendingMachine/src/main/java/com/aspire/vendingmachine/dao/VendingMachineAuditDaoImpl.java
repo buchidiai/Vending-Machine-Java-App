@@ -11,11 +11,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author louie
  */
+@Component
 public class VendingMachineAuditDaoImpl implements VendingMachineAuditDao {
 
     public static final String AUDIT_FILE = "auditactivity.txt";

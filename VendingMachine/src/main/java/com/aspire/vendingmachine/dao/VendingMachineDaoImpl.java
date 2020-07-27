@@ -18,11 +18,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author louie
  */
+@Component
 public class VendingMachineDaoImpl implements VendingMachineDao {
 
     private final String ROSTER_FILE;

@@ -13,16 +13,20 @@ import com.aspire.vendingmachine.service.VendingMachineNoItemInventoryException;
 import com.aspire.vendingmachine.service.VendingMachineServiceLayer;
 import com.aspire.vendingmachine.ui.VendingMachineView;
 import java.math.BigDecimal;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author louie
  */
+@Component
 public class VendingMachineController {
 
     private VendingMachineView view;
     private VendingMachineServiceLayer service;
 
+    @Autowired
     public VendingMachineController(VendingMachineServiceLayer service, VendingMachineView view) {
         this.service = service;
         this.view = view;

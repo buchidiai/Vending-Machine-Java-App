@@ -8,11 +8,13 @@ package com.aspire.vendingmachine.ui;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Scanner;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author louie
  */
+@Component
 public class UserIOConsoleImpl implements UserIO {
 
     final private Scanner in = new Scanner(System.in);

@@ -11,15 +11,19 @@ import com.aspire.vendingmachine.dto.Response;
 import com.aspire.vendingmachine.util.Util;
 import java.math.BigDecimal;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author louie
  */
+@Component
 public class VendingMachineView {
 
     private UserIO io;
 
+    @Autowired
     public VendingMachineView(UserIO io) {
         this.io = io;
     }

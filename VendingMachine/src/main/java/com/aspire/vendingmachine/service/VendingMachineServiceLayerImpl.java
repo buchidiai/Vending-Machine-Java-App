@@ -13,17 +13,21 @@ import com.aspire.vendingmachine.dto.Product;
 import com.aspire.vendingmachine.dto.Response;
 import java.math.BigDecimal;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  *
  * @author louie
  */
+@Component
 public class VendingMachineServiceLayerImpl implements VendingMachineServiceLayer {
 
     private VendingMachineDao dao;
     private VendingMachineAuditDao auditDao;
     private BigDecimal moneyInsertedbyUser;
 
+    @Autowired
     public VendingMachineServiceLayerImpl(VendingMachineDao dao, VendingMachineAuditDao auditDao) {
         this.dao = dao;
         this.auditDao = auditDao;
